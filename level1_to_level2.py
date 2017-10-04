@@ -21,6 +21,7 @@ calibration corr: accounts for the difference between the MATLAB Script
 from __future__ import print_function
 import numpy as np
 import pandas as pd
+from . import diagnostic_plots as dp
 
 
 class UnderwayCO2(pd.DataFrame):
@@ -196,7 +197,7 @@ def _calibration_offset_xCO2(df):
         cov_xx = cp_xx.sum(1) / (n - 1)
 
         slope = cov_xy / cov_xx
-        intercept = ymean.squeeze() - slope*xmean.squeeze()
+        intercept = ymean.squeeze() - slope * xmean.squeeze()
 
         return slope, intercept
 
@@ -225,6 +226,10 @@ def _calibration_offset_xCO2(df):
         stds.loc[j, s] = df.loc[j, 'STD']
 
     offs = meas - stds
+    if (abs(offs.median()) > 7).any():
+        fig = dp.plot_co2_standards(df)
+        txt = offs.median().__repr__()
+        raise Exception("Standards are not within acceptable ranges. \nCheck that the correct values have been set. \nMedian differences between measured and standards are: \n" + txt)
     offs[abs(offs) > 10] = np.NaN
     offs.interpolate('linear', inplace=True)
     offs.bfill(inplace=True)

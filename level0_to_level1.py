@@ -27,7 +27,6 @@ expected_ranges = {
     'Salt_tsg': [25, 38],
     'Pres_equ_hpa': [-10, 10],
     'Temp_equ': [-2, 35],
-    'Pres_licor_hpa': [800, 1200],
 }
 
 required_columns = [
@@ -69,7 +68,7 @@ def concat_co2_files(directory, verbose=False, dt_fmt="%d/%m/%y%H:%M:%S"):
             return dt.today()
 
     def standard_headers(directory, df):
-        file = glob(os.path.join(directory, '*header*.csv'))
+        file = glob('*header*.csv')
         if file:
             hdrs = pd.read_csv(file[0], comment="#")
 
@@ -90,7 +89,7 @@ def concat_co2_files(directory, verbose=False, dt_fmt="%d/%m/%y%H:%M:%S"):
         else:
 
             headers = df.columns.values
-            fname = os.path.join(directory, 'config_header.csv')
+            fname = os.path.join('config_header.csv')
             fobj = open(fname, 'w')
 
             fobj.write("# This is a template for config_headers.\n# Change working_keys to contain the required columns shown in the list below.\n# It is easier if the other variables don't contain spaces in the working_keys.\n# These rows (with leading #) do not have to be removed.\n")
@@ -103,8 +102,9 @@ def concat_co2_files(directory, verbose=False, dt_fmt="%d/%m/%y%H:%M:%S"):
                 fobj.write(h.replace(" ", "_").replace("/", "") + ',' + h + '\n')
             fobj.close()
 
-            raise Exception('config_header.csv is missing in: '
-                            '%s' % directory)
+            raise Exception('config_header.csv is missing in. '
+                            'A template has been created for your convenience: '
+                            '{}'.format(os.path.join(directory, 'config_header.csv')))
 
     # create a file list of all the files in the given directory
     # uses the wildcard to create a list of files

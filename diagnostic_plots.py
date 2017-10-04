@@ -5,9 +5,9 @@ Script takes data from Levelb to Level2 data.
 """
 
 import pylab as plt
-from level1_to_level2 import UnderwayCO2
+from .level1_to_level2 import UnderwayCO2
 import numpy as np
-import pandas as pd
+
 try:
     import seaborn as sns
     sns.set_style('whitegrid')
@@ -153,7 +153,7 @@ def plot_co2_standards(df, sname=None):
 
         STD.CO2x.plot(ax=ax, color='k', **kwdsp)
         ax.axhline(STD.STD[5], c='g')
-        ax.set_ylim(STD.STD[5] - 7, STD.STD[5] + 7)
+        # ax.set_ylim(STD.STD[5] - 7, STD.STD[5] + 7)
         ax.set_title('xCO$_2$ %s (%.2f $\mu$atm)' % (std, STD.STD[5]))
 
     ax1.set_xticklabels('')
