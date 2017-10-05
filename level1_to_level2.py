@@ -225,11 +225,18 @@ def _calibration_offset_xCO2(df):
         meas.loc[j, s] = df.loc[j, 'CO2x']
         stds.loc[j, s] = df.loc[j, 'STD']
 
+    k = meas.notnull().any()
+    meas = meas.loc[:, k]
+    stds = stds.loc[:, k]
+
     offs = meas - stds
-    if (abs(offs.median()) > 7).any():
-        fig = dp.plot_co2_standards(df)
+    if (abs(offs.median()) > 15).any() | (offs.shape[1] < 3):
+        dp.plot_co2_standards(df)
         txt = offs.median().__repr__()
-        raise Exception("Standards are not within acceptable ranges. \nCheck that the correct values have been set. \nMedian differences between measured and standards are: \n" + txt)
+        raise Exception("Standards are not within acceptable ranges. \n"
+                        "Check that the correct values have been set. \n"
+                        "Median differences between measured and standards "
+                        "are: \n" + txt)
     offs[abs(offs) > 10] = np.NaN
     offs.interpolate('linear', inplace=True)
     offs.bfill(inplace=True)

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 Script takes data from Levelb to Level2 data.
 
@@ -150,11 +149,15 @@ def plot_co2_standards(df, sname=None):
     for c, ax in enumerate([ax1, ax2, ax3, ax4]):
         std = 'STD%d' % (c + 1)
         STD = getattr(dfp, std)
+        try:
+          STD.CO2x.plot(ax=ax, color='k', **kwdsp)
+          ax.axhline(STD.STD[5], c='g')
+          ax.set_title('xCO$_2$ %s (%.2f $\mu$atm)' % (std, STD.STD[5]))
+        except TypeError:
+          print('There is no data in {}'.format(std))
+          pass
 
-        STD.CO2x.plot(ax=ax, color='k', **kwdsp)
-        ax.axhline(STD.STD[5], c='g')
         # ax.set_ylim(STD.STD[5] - 7, STD.STD[5] + 7)
-        ax.set_title('xCO$_2$ %s (%.2f $\mu$atm)' % (std, STD.STD[5]))
 
     ax1.set_xticklabels('')
     ax2.set_xticklabels('')
